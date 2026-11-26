@@ -1,0 +1,199 @@
+#include <iostream>
+using namespace std;
+
+class Node
+{
+public:
+    int vertex;
+    Node *next;
+
+    Node(int v)
+    {
+        vertex = v;
+        next = NULL;
+    }
+};
+
+class Graph
+{
+private:
+    int vertices;
+    Node *adj[20];
+    int queue[20];
+    int front, rear;
+    int visited[20];
+
+public:
+    Graph(int v)
+    {
+        vertices = v;
+        front = -1;
+        rear = -1;
+
+        for (int i = 0; i < vertices; i++)
+        {
+            adj[i] = NULL;
+            visited[i] = 0;
+        }
+    }
+
+    void addEdge(int source, int destination)
+    {
+        Node *newNode = new Node(destination);
+        newNode->next = adj[source];
+        adj[source] = newNode;
+
+        newNode = new Node(source);
+        newNode->next = adj[destination];
+        adj[destination] = newNode;
+    }
+
+    void displayGraph()
+    {
+        cout << "\nAdjacency List:\n";
+
+        for (int i = 0; i < vertices; i++)
+        {
+            cout << i << " -> ";
+            Node *temp = adj[i];
+
+            while (temp != NULL)
+            {
+                cout << temp->vertex << " ";
+                temp = temp->next;
+            }
+
+            cout << endl;
+        }
+    }
+
+    void enqueue(int vertex)
+    {
+        if (rear == -1)
+        {
+            front = 0;
+            rear = 0;
+        }
+        else
+        {
+            rear++;
+        }
+
+        queue[rear] = vertex;
+    }
+
+    int dequeue()
+    {
+        int vertex = queue[front];
+        front++;
+
+        if (front > rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+
+        return vertex;
+    }
+
+    bool isEmpty()
+    {
+        return front == -1;
+    }
+
+    void BFS(int start)
+    {
+        for (int i = 0; i < vertices; i++)
+        {
+            visited[i] = 0;
+        }
+
+        front = -1;
+        rear = -1;
+
+        visited[start] = 1;
+        enqueue(start);
+
+        cout << "\nBFS Traversal: ";
+
+        while (!isEmpty())
+        {
+            int current = dequeue();
+            cout << current << " ";
+
+            Node *temp = adj[current];
+
+            while (temp != NULL)
+            {
+                int neighbour = temp->vertex;
+
+                if (visited[neighbour] == 0)
+                {
+                    visited[neighbour] = 1;
+                    enqueue(neighbour);
+                }
+
+                temp = temp->next;
+            }
+        }
+
+        cout << endl;
+    }
+};
+
+int main()
+{
+    int vertices, edges;
+    int source, destination, start;
+
+    cout << "Enter number of vertices (1-20): ";
+    cin >> vertices;
+
+    if (vertices < 1 || vertices > 20)
+    {
+        cout << "Invalid number of vertices." << endl;
+        return 1;
+    }
+
+    Graph g(vertices);
+
+    cout << "Enter number of edges: ";
+    cin >> edges;
+
+    if (edges < 0 || edges > vertices * (vertices - 1) / 2)
+    {
+        cout << "Invalid number of edges." << endl;
+        return 1;
+    }
+
+    for (int i = 0; i < edges; i++)
+    {
+        cout << "Enter source and destination: ";
+        cin >> source >> destination;
+
+        if (source < 0 || source >= vertices ||
+            destination < 0 || destination >= vertices)
+        {
+            cout << "Invalid vertex. Enter vertices from 0 to "
+                 << vertices - 1 << "." << endl;
+            return 1;
+        }
+
+        g.addEdge(source, destination);
+    }
+
+    g.displayGraph();
+
+    cout << "\nEnter starting vertex for BFS: ";
+    cin >> start;
+
+    if (start < 0 || start >= vertices)
+    {
+        cout << "Invalid starting vertex." << endl;
+        return 1;
+    }
+
+    g.BFS(start);
+
+    return 0;
+}
