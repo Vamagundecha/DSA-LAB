@@ -1,0 +1,147 @@
+#include <iostream>
+using namespace std;
+
+#define MAX 5
+
+class Queue
+{
+private:
+    int q[MAX];
+    int front;
+    int rear;
+
+public:
+    // Constructor
+    Queue()
+    {
+        front = -1;
+        rear = -1;
+    }
+
+    // Insert Element
+    void enqueue(int value)
+    {
+        if (rear == MAX - 1)
+        {
+            cout << "Queue Overflow! Queue is full.\n";
+            return;
+        }
+
+        if (front == -1)
+        {
+            front = 0;
+        }
+
+        rear++;
+        q[rear] = value;
+
+        cout << value << " inserted successfully.\n";
+    }
+
+    // Delete Element
+    void dequeue()
+    {
+        if (front == -1)
+        {
+            cout << "Queue Underflow! Queue is empty.\n";
+            return;
+        }
+
+        cout << q[front] << " deleted successfully.\n";
+        front++;
+
+        // Reset queue when empty
+        if (front > rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+    }
+
+    // Show Front Element
+    void peek()
+    {
+        if (front == -1)
+        {
+            cout << "Queue is empty.\n";
+            return;
+        }
+
+        cout << "Front Element: " << q[front] << endl;
+    }
+
+    // Display Queue
+    void display()
+    {
+        if (front == -1)
+        {
+            cout << "Queue is empty.\n";
+            return;
+        }
+
+        cout << "\nQueue Elements:\n";
+
+        for (int i = front; i <= rear; i++)
+        {
+            cout << q[i] << " ";
+        }
+
+        cout << endl;
+    }
+};
+
+int main()
+{
+    Queue obj;
+    int choice, value;
+
+    do
+    {
+        cout << "\n======= Queue Menu =======\n";
+        cout << "1. Insert Element \n";
+        cout << "2. Delete Element \n";
+        cout << "3. Front Element \n";
+        cout << "4. Display Queue \n";
+        cout << "5. Exit \n";
+        cout << "Enter your choice: ";
+        if (!(cin >> choice))
+    {
+        cout << "Invalid Input! Please enter a number.\n";
+
+        cin.clear();              
+        cin.ignore(1000, '\n');   
+
+        continue;
+    }
+        switch (choice)
+        {
+        case 1:
+            cout << "Enter element: ";
+            cin >> value;
+            obj.enqueue(value);
+            break;
+
+        case 2:
+            obj.dequeue();
+            break;
+
+        case 3:
+            obj.peek();
+            break;
+
+        case 4:
+            obj.display();
+            break;
+
+        case 5:
+            cout << "Exiting Program...\n";
+            break;
+
+        default:
+            cout << "Invalid Choice! Please try again.\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
