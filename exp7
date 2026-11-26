@@ -1,0 +1,167 @@
+#include <iostream>
+using namespace std;
+
+class Graph{
+    private:
+    int vertices, adj[20][20];
+
+    public:
+    Graph(){
+        vertices = 0;
+        for(int i = 0; i < 20; i++){
+            for(int j = 0; j < 20; j++){
+                adj[i][j] = 0;
+            }
+        }
+    }
+
+    void createGraph(){
+        int edges, source, destination;
+
+        cout << "\nEnter number of vertices: ";
+        cin >> vertices;
+
+        if(vertices <= 0 || vertices > 20){
+            cout << "\nInvalid number of vertices. Enter 1 to 20.\n";
+            vertices = 0;
+            return;
+        }
+
+        for(int i = 0; i < vertices; i++){
+            for(int j = 0; j < vertices; j++){
+                adj[i][j] = 0;
+            }
+        }
+
+        cout << "Enter number of edges: ";
+        cin >> edges;
+
+        if(edges < 0 || edges > vertices * (vertices - 1) / 2){
+            cout << "\nInvalid number of edges.\n";
+            vertices = 0;
+            return;
+        }
+
+        cout << "\nEnter edges (source destination):\n";
+
+        for(int i = 0; i < edges; i++){
+            cout << "Edge " << i + 1 << ": ";
+            cin >> source >> destination;
+
+            if(source >= 0 && source < vertices &&
+               destination >= 0 && destination < vertices &&
+               source != destination){
+
+                adj[source][destination] = 1;
+                adj[destination][source] = 1;
+            }
+            else{
+                cout << "Invalid edge. Enter valid, distinct vertices.\n";
+                i--;
+            }
+        }
+
+        cout << "\nGraph created successfully.\n";
+    }
+
+    void displayMatrix(){
+        if(vertices == 0){
+            cout << "\nGraph is not created.\n";
+            return;
+        }
+
+        cout << "\nAdjacency Matrix:\n\n";
+
+        cout << "  ";
+        for(int i = 0; i < vertices; i++){
+            cout << i << " ";
+        }
+        cout << endl;
+
+        for(int i = 0; i < vertices; i++){
+            cout << i << " : ";
+
+            for(int j = 0; j < vertices; j++){
+                cout << adj[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    void DFS(int startVertex){
+        if(vertices == 0){
+            cout << "\nGraph is not created.\n";
+            return;
+        }
+
+        if(startVertex < 0 || startVertex >= vertices){
+            cout << "\nInvalid starting vertex.\n";
+            return;
+        }
+
+        int visited[20] = {0};
+        int stack[20];
+        int top = -1;
+
+        stack[++top] = startVertex;
+        visited[startVertex] = 1;
+
+        cout << "\nDFS Traversal: ";
+
+        while(top != -1){
+            int current = stack[top--];
+            cout << current << " ";
+
+            for(int i = vertices - 1; i >= 0; i--){
+                if(adj[current][i] == 1 && visited[i] == 0){
+                    stack[++top] = i;
+                    visited[i] = 1;
+                }
+            }
+        }
+
+        cout << endl;
+    }
+};
+
+int main(){
+    Graph g;
+    int choice, start;
+
+    do{
+        cout << "\n\n===== GRAPH MENU =====";
+        cout << "\n1. Create Graph";
+        cout << "\n2. Display Adjacency Matrix";
+        cout << "\n3. DFS Traversal";
+        cout << "\n4. Exit";
+
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+
+        switch(choice){
+            case 1:
+                g.createGraph();
+                break;
+
+            case 2:
+                g.displayMatrix();
+                break;
+
+            case 3:
+                cout << "\nEnter starting vertex: ";
+                cin >> start;
+                g.DFS(start);
+                break;
+
+            case 4:
+                cout << "\nExiting...";
+                break;
+
+            default:
+                cout << "\nInvalid choice!";
+        }
+
+    }while(choice != 4);
+
+    return 0;
+}
